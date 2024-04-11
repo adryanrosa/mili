@@ -6,7 +6,6 @@ func (t *TextBuffer) adjustGapForCursorPosition() {
 	}
 
 	t.gapBuffer.ShiftGapBy(t.shiftCursorBy)
-
 	t.shiftCursorBy = 0
 }
 
