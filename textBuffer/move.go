@@ -7,7 +7,7 @@ func (t *TextBuffer) MoveLeft() {
 		}
 
 		t.line -= 1
-		t.col = t.LineLengths[t.line]
+		t.col = t.lineLengths[t.line]
 		t.shiftCursorBy -= 1
 
 		return
@@ -18,8 +18,8 @@ func (t *TextBuffer) MoveLeft() {
 }
 
 func (t *TextBuffer) MoveRight() {
-	if t.col == t.LineLengths[t.line] {
-		if t.line == len(t.LineLengths)-1 {
+	if t.col == t.lineLengths[t.line] {
+		if t.line == len(t.lineLengths)-1 {
 			return
 		}
 
@@ -40,7 +40,7 @@ func (t *TextBuffer) MoveUp() {
 	}
 
 	t.line -= 1
-	previousLineLength := t.LineLengths[t.line]
+	previousLineLength := t.lineLengths[t.line]
 
 	if (previousLineLength) < t.col {
 		t.shiftCursorBy -= t.col + 1
@@ -53,12 +53,12 @@ func (t *TextBuffer) MoveUp() {
 }
 
 func (t *TextBuffer) MoveDown() {
-	if t.line == len(t.LineLengths)-1 {
+	if t.line == len(t.lineLengths)-1 {
 		return
 	}
 
 	t.line += 1
-	nextLineLength := t.LineLengths[t.line]
+	nextLineLength := t.lineLengths[t.line]
 
 	if nextLineLength < t.col {
 		t.shiftCursorBy += 1 + t.col
@@ -67,5 +67,5 @@ func (t *TextBuffer) MoveDown() {
 		return
 	}
 
-	t.shiftCursorBy += (t.LineLengths[t.line-1] - t.col) + 1 + t.col
+	t.shiftCursorBy += (t.lineLengths[t.line-1] - t.col) + 1 + t.col
 }

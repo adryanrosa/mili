@@ -9,7 +9,7 @@ type TextBuffer struct {
 	line int
 
 	shiftCursorBy int
-	LineLengths   []int
+	lineLengths   []int
 }
 
 func New() TextBuffer {
@@ -20,7 +20,7 @@ func New() TextBuffer {
 		line: 0,
 
 		shiftCursorBy: 0,
-		LineLengths:   []int{0},
+		lineLengths:   []int{0},
 	}
 }
 
