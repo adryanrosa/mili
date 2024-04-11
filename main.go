@@ -21,10 +21,9 @@ func main() {
 
 	defer cleanup(screen, &textBuffer)
 
-	screen.Clear()
-
 	for {
 		screen.Show()
+		screen.Clear()
 
 		switch event := screen.PollEvent().(type) {
 
