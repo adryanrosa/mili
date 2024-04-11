@@ -31,45 +31,11 @@ func main() {
 			screen.Sync()
 
 		case *tcell.EventKey:
-			{
-				switch event.Key() {
-
-				case tcell.KeyEscape, tcell.KeyCtrlC:
-					return
-
-				case tcell.KeyLeft:
-					textBuffer.MoveLeft()
-
-				case tcell.KeyRight:
-					textBuffer.MoveRight()
-
-				case tcell.KeyUp:
-					textBuffer.MoveUp()
-
-				case tcell.KeyDown:
-					textBuffer.MoveDown()
-
-				case tcell.KeyHome:
-					textBuffer.MoveToStartOfLine()
-
-				case tcell.KeyEnd:
-					textBuffer.MoveToEndOfLine()
-
-				case tcell.KeyEnter:
-					textBuffer.InsertRune('\n')
-
-				case tcell.KeyRune:
-					textBuffer.InsertRune(event.Rune())
-
-				case tcell.KeyBackspace, tcell.KeyBackspace2:
-					break
-
-				case tcell.KeyDelete:
-					break
-				}
-
-				break
+			if event.Key() == tcell.KeyCtrlC {
+				return
 			}
+
+			keyHandler(*event, &textBuffer)
 		}
 
 		screen.ShowCursor(textBuffer.CursorPosition())
