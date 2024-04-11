@@ -56,11 +56,13 @@ func main() {
 					textBuffer.InsertRune(event.Rune())
 
 				case tcell.KeyBackspace, tcell.KeyBackspace2:
-					//
+					break
 
 				case tcell.KeyDelete:
-					//
+					break
 				}
+
+				break
 			}
 		}
 
