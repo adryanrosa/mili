@@ -19,7 +19,7 @@ func main() {
 		log.Fatalf("%+v", err)
 	}
 
-	defer cleanup(screen, &textBuffer)
+	defer cleanup(screen)
 
 	for {
 		screen.Show()

@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/adryanrosa/mili/textBuffer"
 	"github.com/gdamore/tcell/v2"
 )
 
-func cleanup(screen tcell.Screen, textBuffer *textBuffer.TextBuffer) {
+func cleanup(screen tcell.Screen) {
 	maybePanic := recover()
 
 	screen.Fini()
@@ -15,8 +12,6 @@ func cleanup(screen tcell.Screen, textBuffer *textBuffer.TextBuffer) {
 	if maybePanic != nil {
 		panic(maybePanic)
 	}
-
-	fmt.Println(textBuffer.LineLengths)
 }
 
 func renderText(screen tcell.Screen, text string) {
