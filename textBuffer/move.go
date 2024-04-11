@@ -69,3 +69,23 @@ func (t *TextBuffer) MoveDown() {
 
 	t.shiftCursorBy += (t.lineLengths[t.line-1] - t.col) + 1 + t.col
 }
+
+func (t *TextBuffer) MoveToEndOfLine() {
+	lineLength := t.lineLengths[t.line]
+
+	if t.col == lineLength {
+		return
+	}
+
+	t.shiftCursorBy += lineLength - t.col
+	t.col = lineLength
+}
+
+func (t *TextBuffer) MoveToStartOfLine() {
+	if t.col == 0 {
+		return
+	}
+
+	t.shiftCursorBy -= t.col
+	t.col = 0
+}

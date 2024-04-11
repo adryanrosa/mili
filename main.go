@@ -49,6 +49,12 @@ func main() {
 				case tcell.KeyDown:
 					textBuffer.MoveDown()
 
+				case tcell.KeyHome:
+					textBuffer.MoveToStartOfLine()
+
+				case tcell.KeyEnd:
+					textBuffer.MoveToEndOfLine()
+
 				case tcell.KeyEnter:
 					textBuffer.InsertRune('\n')
 
