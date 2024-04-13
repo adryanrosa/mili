@@ -61,8 +61,8 @@ func (t *TextBuffer) MoveDown() {
 	nextLineLength := t.lineLengths[t.line]
 
 	if nextLineLength < t.col {
-		t.shiftCursorBy += 1 + t.col
 		t.col = nextLineLength
+		t.shiftCursorBy += 1 + t.col
 
 		return
 	}
