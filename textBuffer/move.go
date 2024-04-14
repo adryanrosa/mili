@@ -58,16 +58,15 @@ func (t *TextBuffer) MoveDown() {
 	}
 
 	t.line += 1
+
 	nextLineLength := t.lineLengths[t.line]
+	currentCol := t.col
 
 	if nextLineLength < t.col {
 		t.col = nextLineLength
-		t.shiftCursorBy += 1 + t.col
-
-		return
 	}
 
-	t.shiftCursorBy += (t.lineLengths[t.line-1] - t.col) + 1 + t.col
+	t.shiftCursorBy += (t.lineLengths[t.line-1] - currentCol) + 1 + t.col
 }
 
 func (t *TextBuffer) MoveToEndOfLine() {
