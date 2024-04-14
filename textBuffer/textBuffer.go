@@ -1,6 +1,8 @@
 package textBuffer
 
-import "github.com/adryanrosa/mili/gapBuffer"
+import (
+	"github.com/adryanrosa/mili/gapBuffer"
+)
 
 type TextBuffer struct {
 	gapBuffer gapBuffer.GapBuffer
@@ -8,8 +10,8 @@ type TextBuffer struct {
 	col  int
 	line int
 
-	shiftCursorBy int
-	lineLengths   []int
+	cursorOffset int
+	lineLengths  []int
 }
 
 func New() TextBuffer {
@@ -19,15 +21,7 @@ func New() TextBuffer {
 		col:  0,
 		line: 0,
 
-		shiftCursorBy: 0,
-		lineLengths:   []int{0},
+		cursorOffset: 0,
+		lineLengths:  []int{0},
 	}
-}
-
-func (t TextBuffer) String() string {
-	return t.gapBuffer.String(false)
-}
-
-func (t TextBuffer) CursorPosition() (int, int) {
-	return t.col, t.line
 }

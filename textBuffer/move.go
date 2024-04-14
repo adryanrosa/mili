@@ -8,13 +8,13 @@ func (t *TextBuffer) MoveLeft() {
 
 		t.line -= 1
 		t.col = t.lineLengths[t.line]
-		t.shiftCursorBy -= 1
+		t.cursorOffset -= 1
 
 		return
 	}
 
 	t.col -= 1
-	t.shiftCursorBy -= 1
+	t.cursorOffset -= 1
 }
 
 func (t *TextBuffer) MoveRight() {
@@ -25,13 +25,13 @@ func (t *TextBuffer) MoveRight() {
 
 		t.line += 1
 		t.col = 0
-		t.shiftCursorBy += 1
+		t.cursorOffset += 1
 
 		return
 	}
 
 	t.col += 1
-	t.shiftCursorBy += 1
+	t.cursorOffset += 1
 }
 
 func (t *TextBuffer) MoveUp() {
@@ -43,13 +43,13 @@ func (t *TextBuffer) MoveUp() {
 	previousLineLength := t.lineLengths[t.line]
 
 	if (previousLineLength) < t.col {
-		t.shiftCursorBy -= t.col + 1
+		t.cursorOffset -= t.col + 1
 		t.col = previousLineLength
 
 		return
 	}
 
-	t.shiftCursorBy -= t.col + 1 + (previousLineLength - t.col)
+	t.cursorOffset -= t.col + 1 + (previousLineLength - t.col)
 }
 
 func (t *TextBuffer) MoveDown() {
@@ -66,7 +66,7 @@ func (t *TextBuffer) MoveDown() {
 		t.col = nextLineLength
 	}
 
-	t.shiftCursorBy += (t.lineLengths[t.line-1] - currentCol) + 1 + t.col
+	t.cursorOffset += (t.lineLengths[t.line-1] - currentCol) + 1 + t.col
 }
 
 func (t *TextBuffer) MoveToEndOfLine() {
@@ -76,7 +76,7 @@ func (t *TextBuffer) MoveToEndOfLine() {
 		return
 	}
 
-	t.shiftCursorBy += lineLength - t.col
+	t.cursorOffset += lineLength - t.col
 	t.col = lineLength
 }
 
@@ -85,6 +85,6 @@ func (t *TextBuffer) MoveToStartOfLine() {
 		return
 	}
 
-	t.shiftCursorBy -= t.col
+	t.cursorOffset -= t.col
 	t.col = 0
 }

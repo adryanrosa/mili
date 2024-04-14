@@ -2,19 +2,18 @@ package gapBuffer
 
 import "strings"
 
-func (g GapBuffer) String(withGap bool) string {
+func (g GapBuffer) string() string {
 	var builder strings.Builder
-
-	if withGap {
-		builder.Grow(len(g.data))
-		builder.Write(g.data)
-
-		return builder.String()
-	}
 
 	builder.Grow(len(g.data) - (g.gapEnd - g.gapStart))
 	builder.Write(g.data[:g.gapStart])
 	builder.Write(g.data[g.gapEnd:])
 
 	return builder.String()
+}
+
+func (g GapBuffer) Text() (beforeGap string, afterGap string) {
+	text := g.string()
+
+	return text[:g.gapStart], text[g.gapStart:]
 }

@@ -1,44 +1,84 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"os"
 
 	"github.com/adryanrosa/mili/textBuffer"
-	"github.com/gdamore/tcell/v2"
+	"github.com/charmbracelet/bubbles/cursor"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
-func main() {
-	textBuffer := textBuffer.New()
-	screen, err := tcell.NewScreen()
+type model struct {
+	textBuffer textBuffer.TextBuffer
+	cursor     cursor.Model
+}
 
-	if err != nil {
-		log.Fatalf("%+v", err)
+func initialModel() model {
+	cursor := cursor.New()
+	cursor.Focus()
+
+	return model{
+		textBuffer: textBuffer.New(),
+		cursor:     cursor,
 	}
+}
 
-	if err := screen.Init(); err != nil {
-		log.Fatalf("%+v", err)
-	}
+func (m model) Init() tea.Cmd {
+	return tea.ClearScreen
+}
 
-	defer cleanup(screen)
+func (m model) View() string {
+	preCursor, cursor, postCursor := m.textBuffer.Text()
+	m.cursor.SetChar(cursor)
 
-	for {
-		screen.Show()
-		screen.Clear()
+	return preCursor + m.cursor.View() + postCursor
+}
 
-		switch event := screen.PollEvent().(type) {
+func (m model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
+	switch messageType := message.(type) {
 
-		case *tcell.EventResize:
-			screen.Sync()
+	case tea.KeyMsg:
+		switch messageType.Type {
 
-		case *tcell.EventKey:
-			if event.Key() == tcell.KeyCtrlC {
-				return
-			}
+		case tea.KeyCtrlC:
+			return m, tea.Quit
 
-			keyHandler(*event, &textBuffer)
+		case tea.KeyLeft:
+			m.textBuffer.MoveLeft()
+
+		case tea.KeyRight:
+			m.textBuffer.MoveRight()
+
+		case tea.KeyUp:
+			m.textBuffer.MoveUp()
+
+		case tea.KeyDown:
+			m.textBuffer.MoveDown()
+
+		case tea.KeyHome:
+			m.textBuffer.MoveToStartOfLine()
+
+		case tea.KeyEnd:
+			m.textBuffer.MoveToEndOfLine()
+
+		case tea.KeyEnter:
+			m.textBuffer.InsertRune('\n')
+
+		case tea.KeyRunes, tea.KeySpace:
+			m.textBuffer.InsertRune(messageType.Runes[0])
 		}
+	}
 
-		screen.ShowCursor(textBuffer.CursorPosition())
-		renderText(screen, textBuffer.String())
+	return m, nil
+}
+
+func main() {
+	program := tea.NewProgram(initialModel())
+
+	if _, err := program.Run(); err != nil {
+		fmt.Printf("Error: %v", err)
+
+		os.Exit(1)
 	}
 }

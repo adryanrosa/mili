@@ -1,12 +1,12 @@
 package textBuffer
 
 func (t *TextBuffer) adjustGapForCursorPosition() {
-	if t.shiftCursorBy == 0 {
+	if t.cursorOffset == 0 {
 		return
 	}
 
-	t.gapBuffer.ShiftGapBy(t.shiftCursorBy)
-	t.shiftCursorBy = 0
+	t.gapBuffer.ShiftGapBy(t.cursorOffset)
+	t.cursorOffset = 0
 }
 
 func (t *TextBuffer) insertNewLine() {
