@@ -6,12 +6,16 @@ import (
 
 	"github.com/adryanrosa/mili/textBuffer"
 	"github.com/charmbracelet/bubbles/cursor"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
 	textBuffer textBuffer.TextBuffer
-	cursor     cursor.Model
+	ready      bool
+
+	cursor   cursor.Model
+	viewport viewport.Model
 }
 
 func initialModel() model {
@@ -25,59 +29,52 @@ func initialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return tea.ClearScreen
+	return nil
 }
 
 func (m model) View() string {
-	preCursor, cursor, postCursor := m.textBuffer.Text()
-	m.cursor.SetChar(cursor)
+	if !m.ready {
+		return "Initializing..."
+	}
 
-	return preCursor + m.cursor.View() + postCursor
+	return m.viewport.View()
 }
 
 func (m model) Update(message tea.Msg) (tea.Model, tea.Cmd) {
-	switch messageType := message.(type) {
+	switch message := message.(type) {
+
+	case tea.WindowSizeMsg:
+		if !m.ready {
+			m.viewport = viewport.New(message.Width, message.Height)
+			m.ready = true
+		} else {
+			m.viewport.Width = message.Width
+			m.viewport.Height = message.Height
+		}
 
 	case tea.KeyMsg:
-		switch messageType.Type {
+		keyCommand := m.handleKeyMessage(message)
 
-		case tea.KeyCtrlC:
-			return m, tea.Quit
-
-		case tea.KeyLeft:
-			m.textBuffer.MoveLeft()
-
-		case tea.KeyRight:
-			m.textBuffer.MoveRight()
-
-		case tea.KeyUp:
-			m.textBuffer.MoveUp()
-
-		case tea.KeyDown:
-			m.textBuffer.MoveDown()
-
-		case tea.KeyHome:
-			m.textBuffer.MoveToStartOfLine()
-
-		case tea.KeyEnd:
-			m.textBuffer.MoveToEndOfLine()
-
-		case tea.KeyEnter:
-			m.textBuffer.InsertRune('\n')
-
-		case tea.KeyRunes, tea.KeySpace:
-			m.textBuffer.InsertRune(messageType.Runes[0])
+		if keyCommand != nil {
+			return m, keyCommand
 		}
 	}
 
-	return m, nil
+	preCursor, cursor, postCursor := m.textBuffer.Text()
+	m.cursor.SetChar(cursor)
+	m.viewport.SetContent(preCursor + m.cursor.View() + postCursor)
+
+	var viewportCommand tea.Cmd
+	m.viewport, viewportCommand = m.viewport.Update(message)
+
+	return m, viewportCommand
 }
 
 func main() {
-	program := tea.NewProgram(initialModel())
+	program := tea.NewProgram(initialModel(), tea.WithAltScreen(), tea.WithMouseCellMotion())
 
 	if _, err := program.Run(); err != nil {
-		fmt.Printf("Error: %v", err)
+		fmt.Printf("There's been an error: %v", err)
 
 		os.Exit(1)
 	}
