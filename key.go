@@ -1,6 +1,8 @@
 package main
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 func (m *model) handleKeyMessage(message tea.KeyMsg) tea.Cmd {
 	switch message.Type {
@@ -25,6 +27,9 @@ func (m *model) handleKeyMessage(message tea.KeyMsg) tea.Cmd {
 
 	case tea.KeyEnd:
 		m.textBuffer.MoveToEndOfLine()
+
+	case tea.KeyBackspace:
+		m.textBuffer.RemoveLeftChar()
 
 	case tea.KeyEnter:
 		m.textBuffer.InsertRune('\n')
